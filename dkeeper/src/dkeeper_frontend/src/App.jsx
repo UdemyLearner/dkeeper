@@ -1,31 +1,76 @@
-import { useState } from 'react';
-import { dkeeper_backend } from 'declarations/dkeeper_backend';
+import React, { useState } from "react";
+import Header from "./Header";
+import Footer from "./Footer";
+import Note from "./Note";
+import CreateArea from "./CreateArea";
 
 function App() {
-  const [greeting, setGreeting] = useState('');
+  const [notes, setNotes] = useState([]);
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    dkeeper_backend.greet(name).then((greeting) => {
-      setGreeting(greeting);
+  function addNote(newNote) {
+    setNotes(prevNotes => {
+      return [...prevNotes, newNote];
     });
-    return false;
+  }
+
+  function deleteNote(id) {
+    setNotes(prevNotes => {
+      return prevNotes.filter((noteItem, index) => {
+        return index !== id;
+      });
+    });
   }
 
   return (
-    <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
-    </main>
+    <div>
+      <Header />
+      <CreateArea onAdd={addNote} />
+      {notes.map((noteItem, index) => {
+        return (
+          <Note
+            key={index}
+            id={index}
+            title={noteItem.title}
+            content={noteItem.content}
+            onDelete={deleteNote}
+          />
+        );
+      })}
+      <Footer />
+    </div>
   );
 }
 
 export default App;
+
+// import { useState } from 'react';
+// import { dkeeper_backend } from 'declarations/dkeeper_backend';
+
+// function App() {
+//   const [greeting, setGreeting] = useState('');
+
+//   function handleSubmit(event) {
+//     event.preventDefault();
+//     const name = event.target.elements.name.value;
+//     dkeeper_backend.greet(name).then((greeting) => {
+//       setGreeting(greeting);
+//     });
+//     return false;
+//   }
+
+//   return (
+//     <main>
+//       <img src="/logo2.svg" alt="DFINITY logo" />
+//       <br />
+//       <br />
+//       <form action="#" onSubmit={handleSubmit}>
+//         <label htmlFor="name">Enter your name: &nbsp;</label>
+//         <input id="name" alt="Name" type="text" />
+//         <button type="submit">Click Me not!</button>
+//       </form>
+//       <section id="greeting">{greeting}</section>
+//     </main>
+//   );
+// }
+
+// export default App;
